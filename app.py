@@ -94,5 +94,6 @@ async def get_mrts():
 # async def thankyou(request: Request):
 # 	return FileResponse("./static/thankyou.html", media_type="text/html")
 
+
 if __name__ == '__main__':
     uvicorn.run(app, host="localhost", port=8000)
