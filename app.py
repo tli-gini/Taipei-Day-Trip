@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException,Query,Path
 from fastapi.responses import JSONResponse,FileResponse
-from attraction import attraction_name, attraction_mrt,get_attraction_id, get_mrt_stats
+from fastapi.staticfiles import StaticFiles
+from attraction import get_all_attractions, attraction_name, attraction_mrt,get_attraction_id, get_mrt_stats
 from decimal import Decimal
 import uvicorn
 import json
@@ -18,22 +19,24 @@ def decimal_default(obj):
         return float(obj)  
     raise TypeError(f"Object of type '{type(obj).__name__}' is not JSON serializable")
 
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
 # Static Pages (Never Modify Code in this Block)
-# @app.get("/", include_in_schema=False)
-# async def index(request: Request):
-# 	return FileResponse("./static/index.html", media_type="text/html")
+@app.get("/", include_in_schema=False)
+async def index(request: Request):
+	return FileResponse("./static/index.html", media_type="text/html")
 
 # @app.get("/attraction/{id}", include_in_schema=False)
 # async def attraction(request: Request, id: int):
 # 	return FileResponse("./static/attraction.html", media_type="text/html")
 
-@app.get("/api/attraction")
+@app.get("/api/attractions")
 async def get_attraction(page: int = Query(0, ge=0), keyword: str = Query(None, alias="keyword")):
-    if not keyword:
-        raise HTTPException(status_code=500, detail="Keyword is required")
-
     try:
-        attractions = attraction_name(keyword) + attraction_mrt(keyword)
+        if keyword:
+            attractions = attraction_name(keyword) + attraction_mrt(keyword)
+        else:
+            attractions = get_all_attractions()  
         
         unique_dicts = {}
         for d in attractions:

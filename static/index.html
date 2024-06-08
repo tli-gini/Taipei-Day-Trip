@@ -1,11 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Index</title>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/static/index.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
+      rel="stylesheet"
+    />
+    <title>Index</title>
+  </head>
   
-</body>
+  <body> 
+    <header class="header">
+      
+        <div class="header-content">
+          <div class="title">台北一日遊</div>
+          <div class="menu-container" id="menu-container">
+            <div class="menu">
+              <div class="menu-items">
+                <div class="menu-item">預定行程</div>
+                <div class="menu-item">登入/註冊</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+    </header>
+    <div class="welcome">
+      <img  src="/static/img/[desktop] hero section.jpg" alt=""/>
+      <div class="welcome-text-container">
+        
+       <div class="welcome-text">
+        <div class="welcome-title">輕鬆享受台北一日悠閒</div>
+        <div class="welcome-paragraph">探索每個角落，體驗城市的深度旅遊行程</div>
+        <div id="search-section">
+          <div class="search-box">
+            <input type="text" placeholder="輸入景點名稱查詢" />
+            <button
+              id="search-button"
+              onmouseover=""
+              onmouseout=""
+            >
+              <img src="/static/img/icon/icon_search.png" alt=""/>
+            </button>
+          </div>
+        </div>
+       </div>
+      </div>
+    </div>
+      <div class="boxes-container">
+        <div class="mrt-bar-container">
+          <div class="left-mrt-arrow active">
+            <img class="left-mrt-arrow-img" src="/static/img/icon/left-hovered.png"  alt=""/>
+          </div>
+          <ul class="mrt-bar" id="mrt-bar">
+          </ul>
+          <div class="right-mrt-arrow active">
+            <img class="right-mrt-arrow-img" src="/static/img/icon/right-hovered.png" alt=""/>
+          </div>
+          
+        </div>
+        <div class="big-boxes" id="big-boxes">
+        </div>
+      </iv>
+    </div>
+    <footer>
+      <div class="footer">
+        <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
+      </div>
+    </footer>
+  </body>
+  <script>
+    const mrtScroll = document.querySelectorAll(".mrt-bar-container a");
+    const rightArrow = document.querySelector(
+      ".mrt-bar-container .right-mrt-arrow .right-mrt-arrow-img"
+    );
+    const leftArrow = document.querySelector(
+      ".mrt-bar-container .left-mrt-arrow .left-mrt-arrow-img"
+    );
+    const mrtList = document.querySelector(".mrt-bar-container .mrt-bar");
+
+    const manageScroll = () => {
+      let maxScrollValue = mrtList.scrollWidth - mrtList.clientWidth - 20;
+      console.log("scrollWidth: ", mrtList.scrollWidth);
+      console.log("clientWidth: ", mrtList.clientWidth);
+      console.log("maxScrollValue: ", maxScrollValue);
+      console.log("scrollLeft: ", mrtList.scrollLeft);
+    };
+
+    const getScrollAmount = () => {
+      if (
+        window.matchMedia("(min-width: 1200px) and (max-width: 1920px)").matches
+      ) {
+        return 800;
+      } else if (
+        window.matchMedia("(min-width: 920px) and (max-width: 1200px)").matches
+      ) {
+        return 645;
+      } else if (
+        window.matchMedia("(min-width: 600px) and (max-width: 920px)").matches
+      ) {
+        return 420;
+      } else if (
+        window.matchMedia("(min-width: 360px) and (max-width: 600px)").matches
+      ) {
+        return 235;
+      } else {
+        return 200;
+      }
+    };
+    rightArrow.addEventListener("click", () => {
+      mrtList.scrollLeft += getScrollAmount();
+      manageScroll();
+    });
+
+    leftArrow.addEventListener("click", () => {
+      mrtList.scrollLeft -= getScrollAmount();
+      manageScroll();
+    });
+  </script>
+  <script src="/static/index.js"></script>
 </html>
