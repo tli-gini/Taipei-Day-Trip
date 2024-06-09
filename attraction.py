@@ -52,6 +52,31 @@ def main():
 if __name__ == "__main__":
     main()
 
+def get_all_attractions():
+    db = connect_db()
+    cursor = db.cursor(dictionary=True)  
+    try:
+        query = "SELECT * FROM information"
+        cursor.execute(query)
+        results = cursor.fetchall()
+        
+        for result in results:
+            if result['images']:
+                result['images'] = json.loads(result['images'])
+
+            result['lat'] = str(result['lat']) if isinstance(result['lat'], Decimal) else result['lat']
+            result['lng'] = str(result['lng']) if isinstance(result['lng'], Decimal) else result['lng']
+        
+        return results
+    except mysql.connector.Error as e:
+        print(f"Error querying database: {e}")
+        return None
+    finally:
+        if cursor:
+            cursor.close()
+        if db:
+            db.close()
+
 
 def attraction_name(name):
     db = connect_db()
