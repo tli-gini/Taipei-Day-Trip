@@ -1,6 +1,6 @@
 const apiUrl = "http://127.0.0.1:8000"; //remember to change
 console.log(apiUrl);
-console.log("ok");
+console.log("successful connection.");
 
 let nextPage = 0;
 let isLoading = false;
@@ -60,6 +60,15 @@ const loadAttractions = async (page, keyword = "") => {
   }
 };
 
+loadAttractions(nextPage);
+
+document.getElementById("search-button").addEventListener("click", () => {
+  const keywordInput = document.querySelector(".search-box input");
+  currentKeyword = keywordInput.value;
+  nextPage = 0;
+  loadAttractions(nextPage, currentKeyword);
+});
+
 // Fetch MRT Station Names
 const mrtsOptions = {
   method: "GET",
@@ -97,13 +106,14 @@ const addMRTEventListeners = () => {
       event.preventDefault();
       const mrtName = event.target.getAttribute("data-mrt");
       document.querySelector(".search-box input").value = mrtName;
+      currentKeyword = mrtName;
       nextPage = 0;
       loadAttractions(nextPage, mrtName);
     });
   });
 };
 
-// IntersectionObserver setup for infinite scrolling
+// IntersectionObserver setup
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
