@@ -407,10 +407,13 @@ input {
   .mrt-bar-container {
     max-width: 322px;
   }
-  .search-box {
-    width: 285px;
-    input {
-      width: 225px;
+  #search-section {
+    width: 285px !important;
+    .search-box {
+      width: 285px;
+      input {
+        width: 225px;
+      }
     }
   }
 }

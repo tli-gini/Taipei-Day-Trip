@@ -402,10 +402,13 @@ input::placeholder {
   .mrt-bar-container {
     max-width: 322px;
   }
-  .search-box {
+  #search-section {
+    width: 285px !important;
+  }
+  #search-section .search-box {
     width: 285px;
   }
-  .search-box input {
+  #search-section .search-box input {
     width: 225px;
   }
 }

@@ -28,7 +28,6 @@ const loadAttractions = async (page, keyword = "") => {
     console.log(data);
 
     let result = document.querySelector("#big-boxes");
-
     if (page === 0) {
       result.innerHTML = "";
     }
@@ -47,7 +46,6 @@ const loadAttractions = async (page, keyword = "") => {
           </div>
         </div>
       `;
-
       result.innerHTML += attractionHTML;
     });
 
@@ -58,15 +56,6 @@ const loadAttractions = async (page, keyword = "") => {
     isLoading = false;
   }
 };
-
-loadAttractions(nextPage);
-
-document.getElementById("search-button").addEventListener("click", () => {
-  const keywordInput = document.querySelector(".search-box input");
-  currentKeyword = keywordInput.value;
-  nextPage = 0;
-  loadAttractions(nextPage, currentKeyword);
-});
 
 // Fetch MRT Station Names
 const mrtsOptions = {
@@ -105,13 +94,15 @@ const addMRTEventListeners = () => {
       event.preventDefault();
       const mrtName = event.target.getAttribute("data-mrt");
       document.querySelector(".search-box input").value = mrtName;
-      nextPage = 1;
+      nextPage = 0;
       loadAttractions(nextPage, mrtName);
     });
   });
 };
 
-// IntersectionObserver setup
+loadAttractions(nextPage);
+
+// IntersectionObserver setup for infinite scrolling
 const observer = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry) => {
