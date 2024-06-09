@@ -1,5 +1,6 @@
 const apiUrl = "http://127.0.0.1:8000"; //remember to change
 console.log(apiUrl);
+console.log("ok");
 
 let nextPage = 0;
 let isLoading = false;
@@ -28,6 +29,7 @@ const loadAttractions = async (page, keyword = "") => {
     console.log(data);
 
     let result = document.querySelector("#big-boxes");
+
     if (page === 0) {
       result.innerHTML = "";
     }
@@ -46,6 +48,7 @@ const loadAttractions = async (page, keyword = "") => {
           </div>
         </div>
       `;
+
       result.innerHTML += attractionHTML;
     });
 
@@ -99,8 +102,6 @@ const addMRTEventListeners = () => {
     });
   });
 };
-
-loadAttractions(nextPage);
 
 // IntersectionObserver setup for infinite scrolling
 const observer = new IntersectionObserver(
