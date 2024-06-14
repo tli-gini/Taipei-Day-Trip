@@ -37,7 +37,7 @@ const loadAttractions = async (page, keyword = "") => {
     let spotInfo = data.data;
     spotInfo.forEach((spot) => {
       let attractionHTML = `
-        <div class="big-box">
+        <div class="big-box" data-id="${spot.id}">
           <div class="box-top">
             <img src="${spot.images[0]}" alt="${spot.name}" />
             <div class="big-text">${spot.name}</div>
@@ -67,6 +67,14 @@ document.getElementById("search-button").addEventListener("click", () => {
   currentKeyword = keywordInput.value;
   nextPage = 0;
   loadAttractions(nextPage, currentKeyword);
+});
+
+document.querySelector("#big-boxes").addEventListener("click", (event) => {
+  const box = event.target.closest(".big-box");
+  if (box) {
+    const id = box.getAttribute("data-id");
+    window.location.href = `/attraction/${id}`;
+  }
 });
 
 // Fetch MRT Station Names

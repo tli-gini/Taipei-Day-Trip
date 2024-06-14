@@ -26,9 +26,9 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 async def index(request: Request):
 	return FileResponse("./static/index.html", media_type="text/html")
 
-# @app.get("/attraction/{id}", include_in_schema=False)
-# async def attraction(request: Request, id: int):
-# 	return FileResponse("./static/attraction.html", media_type="text/html")
+@app.get("/attraction/{id}", include_in_schema=False) 
+async def attraction(request: Request, id: int):  
+	return FileResponse("./static/attraction.html", media_type="text/html")
 
 @app.get("/api/attractions")
 async def get_attraction(page: int = Query(0, ge=0), keyword: str = Query(None, alias="keyword")):

@@ -10,67 +10,66 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
       rel="stylesheet"
     />
-    <title>Index</title>
+    <title>首頁 - 台北一日遊</title>
   </head>
-  
-  <body> 
+
+  <body>
     <header class="header">
-      
-        <div class="header-content">
-          <div class="title">台北一日遊</div>
-          <div class="menu-container" id="menu-container">
-            <div class="menu">
-              <div class="menu-items">
-                <div class="menu-item">預定行程</div>
-                <div class="menu-item">登入/註冊</div>
+      <div class="header-content">
+        <div class="title" id="back-to homepage">台北一日遊</div>
+        <div class="menu-container" id="menu-container">
+          <div class="menu">
+            <div class="menu-items">
+              <div class="menu-item">預定行程</div>
+              <div class="menu-item">登入/註冊</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+    <div class="content">
+      <div class="welcome">
+        <img src="/static/img/[desktop] hero section.jpg" alt="" />
+        <div class="welcome-text-container">
+          <div class="welcome-text">
+            <div class="welcome-title">輕鬆享受台北一日悠閒</div>
+            <div class="welcome-paragraph">
+              探索每個角落，體驗城市的深度旅遊行程
+            </div>
+            <div id="search-section">
+              <div class="search-box">
+                <input type="text" placeholder="輸入景點名稱查詢" />
+                <button id="search-button" onmouseover="" onmouseout="">
+                  <img src="/static/img/icon/icon_search.png" alt="" />
+                </button>
               </div>
             </div>
           </div>
         </div>
-      
-    </header>
-    <div class="welcome">
-      <img  src="/static/img/[desktop] hero section.jpg" alt=""/>
-      <div class="welcome-text-container">
-        
-       <div class="welcome-text">
-        <div class="welcome-title">輕鬆享受台北一日悠閒</div>
-        <div class="welcome-paragraph">探索每個角落，體驗城市的深度旅遊行程</div>
-        <div id="search-section">
-          <div class="search-box">
-            <input type="text" placeholder="輸入景點名稱查詢" />
-            <button
-              id="search-button"
-              onmouseover=""
-              onmouseout=""
-            >
-              <img src="/static/img/icon/icon_search.png" alt=""/>
-            </button>
-          </div>
-        </div>
-       </div>
       </div>
-    </div>
       <div class="boxes-container">
         <div class="mrt-bar-container">
           <div class="left-mrt-arrow active">
-            <img class="left-mrt-arrow-img" src="/static/img/icon/left-hovered.png"  alt=""/>
+            <img
+              class="left-mrt-arrow-img"
+              src="/static/img/icon/left-hovered.png"
+              alt=""
+            />
           </div>
-          <ul class="mrt-bar" id="mrt-bar">
-          </ul>
+          <ul class="mrt-bar" id="mrt-bar"></ul>
           <div class="right-mrt-arrow active">
-            <img class="right-mrt-arrow-img" src="/static/img/icon/right-hovered.png" alt=""/>
+            <img
+              class="right-mrt-arrow-img"
+              src="/static/img/icon/right-hovered.png"
+              alt=""
+            />
           </div>
-          
         </div>
-        <div class="big-boxes" id="big-boxes">
-        </div>
-      </iv>
-    </div>
-    <footer>
-      <div class="footer">
-        <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
+        <div class="big-boxes" id="big-boxes"></div>
       </div>
+    </div>
+    <footer class="footer">
+      <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
   </body>
   <script>
