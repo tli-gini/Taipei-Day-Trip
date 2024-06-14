@@ -32,6 +32,8 @@ body {
   width: 100%;
   padding-top: 54px;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .header {
@@ -80,6 +82,10 @@ body {
   font-weight: 500;
   line-height: 13.3px;
   text-align: left;
+}
+
+.content {
+  flex: 1;
 }
 
 .welcome {

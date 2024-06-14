@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="./attraction.css" />
+    <link rel="stylesheet" href="/static/attraction.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -11,12 +11,12 @@
       rel="stylesheet"
     />
 
-    <title>Attraction</title>
+    <title id="title-name"></title>
   </head>
   <body>
     <header class="header">
       <div class="header-content">
-        <div class="title">台北一日遊</div>
+        <div class="title" id="back-to-homepage">台北一日遊</div>
         <div class="menu-container" id="menu-container">
           <div class="menu">
             <div class="menu-items">
@@ -28,81 +28,122 @@
       </div>
     </header>
 
-    <div class="container">
+    <div class="container" id="attraction-info">
       <div class="top-content">
         <div class="left-side-top">
           <div class="left-img-container">
-            <img src="./img/icon/btn_leftArrow.png" class="arrow-left" alt="" />
-            <img src="./img/left-img.jpg" alt="" class="left-img" />
             <img
-              src="./img/icon/btn_rightArrow.png"
+              src="/static/img/icon/btn_leftArrow.png"
+              class="arrow-left"
+              alt=""
+              id="prev-slide"
+            />
+            <div class="img-wrapper" id="img-wrapper">
+              <!-- <img src="./img/left-img.jpg" alt="" class="left-img" id="img1" />
+              <img src="./img/welcome.jpg" alt="" class="left-img" id="img2" />
+              <img src="./img/left-img.jpg" alt="" class="left-img" id="img3" /> -->
+            </div>
+            <div class="slide-nav" id="slide-nav">
+              <!-- <a href="#img1" class="img-dot"></a>
+              <a href="#img2" class="img-dot"></a>
+              <a href="#img3" class="img-dot"></a> -->
+            </div>
+            <img
+              src="/static/img/icon/btn_rightArrow.png"
               class="arrow-right"
               alt=""
+              id="next-slide"
             />
           </div>
         </div>
         <div class="right-side-top">
-          <div class="right-attraction">平安鐘</div>
+          <div class="right-attraction" id="attraction-name"></div>
           <div class="right-cat-mrt">
-            <div class="right-subtitle">公共藝術</div>
+            <div class="right-subtitle" id="cat"></div>
             <div class="right-subtitle">&nbsp;at&nbsp;</div>
-            <div class="right-subtitle">忠孝復興</div>
+            <div class="right-subtitle" id="mrt"></div>
           </div>
           <div class="right-booking-container">
-            <div class="right-sm-title">訂購導覽行程</div>
-            <div class="right-sm-paragraph">
-              以此景點為中心的一日行程，帶您探索城市角落故事
+            <div class="right-info p1">
+              <div class="right-sm-title">訂購導覽行程</div>
             </div>
-            <div class="right-info">
+            <div class="right-info p2">
+              <div class="right-sm-paragraph">
+                以此景點為中心的一日行程，帶您探索城市角落故事
+              </div>
+            </div>
+            <div class="right-info p3">
               <div class="right-sm-title">選擇日期：</div>
 
               <input type="date" class="input-date custom-inpt" />
             </div>
-            <div class="right-info">
+            <div class="right-info p4">
               <div class="right-sm-title">選擇時間：</div>
               <div class="check-container">
-                <a href="#" class="check-btn" id="check-am"></a>
-                <div class="check-text">上半天</div>
+                <input
+                  type="radio"
+                  class="check-btn"
+                  name="check-btn"
+                  id="check-am"
+                  onclick="checkTime()"
+                />
+                <label for="check-am" class="check-style"></label>
+                <span class="check-text">上半天</span>
               </div>
               <div class="check-container">
-                <a href="#" class="check-btn" id="check-pm"></a>
-                <div class="check-text">下半天</div>
+                <input
+                  type="radio"
+                  class="check-btn"
+                  name="check-btn"
+                  id="check-pm"
+                  onclick="checkTime()"
+                />
+                <label for="check-pm" class="check-style"></label>
+                <span class="check-text">下半天</span>
               </div>
             </div>
-            <div class="right-info">
+            <div class="right-info p5">
               <div class="right-sm-title">導覽費用：</div>
-              <div class="right-sm-paragraph">新台幣 2000 元</div>
+              <div class="right-sm-price">
+                新台幣 <span class="price" id="price">0</span> 元
+              </div>
             </div>
             <button class="booking-btn">開始預約行程</button>
           </div>
         </div>
       </div>
       <div class="bottom-content">
-        <div class="bottom-box">
-          <div class="bottom-paragraph">
-            平安鐘祈求大家的平安，這是為了紀念921地震週年的設計，在喧鬧的廣場上每個小時鳴鐘，保佑平安，祈禱臺灣不會再發生這樣的天災。雙手合十加上108個黃色的琉璃乳丁，隨著緩緩流下的水，在底下的一個小噴泉噴出。雙手合十的意義，一個是祈福，一個是包容，教我們要包容這樣的改變，撫平這樣的傷口。下面的水緩緩流出，代表著人的生命力是不斷地延續下去。緩緩地鐘聲，卻帶來心中的寧靜。
-            這個平安鐘是由建築師姚仁喜與琉璃創作家王俠軍共同設計，長6公尺、寬5公尺，以鑄銅製成，由法鼓山文教基金會全額出資。平安鐘點綴都市景觀，不時提醒大家，面對刻骨銘心的災難痛苦，更應該有謙卑的一顆心。
-          </div>
+        <div class="bottom-box first-bottom-box">
+          <div class="bottom-paragraph" id="description"></div>
         </div>
 
         <div class="bottom-box">
           <div class="bottom-title">景點地址：</div>
-          <div class="bottom-paragraph">臺北市 大安區忠孝東路4段</div>
+          <div class="bottom-paragraph" id="address"></div>
         </div>
         <div class="bottom-box">
           <div class="bottom-title">交通方式：</div>
-          <div class="bottom-paragraph">
-            捷運站名：忠孝復興站4號出口1.公車：204、212、212直、232、232副、262、262(區間)、278、299、521、605、605(副)、605(新台五線)、667、903、忠孝新幹線至頂好市場站
-            2.車位：太平洋崇光百貨地下停車場或市民大道附近地下停車場
-          </div>
+          <div class="bottom-paragraph" id="transport"></div>
         </div>
       </div>
     </div>
-    <footer>
-      <div class="footer">
-        <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
-      </div>
+    <footer class="footer">
+      <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
-    <script></script>
   </body>
+  <script>
+    // checkbox
+    const checkAM = document.getElementById("check-am");
+    const checkPM = document.getElementById("check-pm");
+    const price = document.getElementById("price");
+
+    function checkTime() {
+      if (checkAM.checked) {
+        price.textContent = 2000;
+      } else if (checkPM.checked) {
+        price.textContent = 2500;
+      }
+    }
+  </script>
+  <script src="/static/attraction.js"></script>
 </html>
