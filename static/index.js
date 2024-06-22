@@ -1,6 +1,4 @@
-const apiUrl = "http://127.0.0.1:8000"; //remember to change
-console.log(apiUrl);
-console.log("successful connection.");
+console.log("Homepage successful connection.");
 
 let nextPage = 0;
 let isLoading = false;
