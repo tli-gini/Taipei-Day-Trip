@@ -1,6 +1,8 @@
-const apiUrl = "http://127.0.0.1:8000"; //remember to change
+window.apiUrl = "http://127.0.0.1:8000"; //remember to change
 console.log(apiUrl);
 
+// var attractionId = require("./attraction");
+// console.log("attractionId: ", attractionId);
 // Dialogs
 const signinDialog = document.querySelector("#signin-dialog");
 const signupDialog = document.querySelector("#signup-dialog");
@@ -165,3 +167,20 @@ document.addEventListener("DOMContentLoaded", function () {
     location.reload();
   }
 });
+
+// Connect to booking page
+function isUserSignedIn() {
+  const token = localStorage.getItem("jwtToken");
+  return token !== null;
+}
+
+function handleBookingClick() {
+  if (isUserSignedIn()) {
+    window.location.href = "/booking";
+  } else {
+    openSignin();
+  }
+}
+
+const bookBtn = document.querySelector("#book-btn");
+bookBtn.addEventListener("click", handleBookingClick);

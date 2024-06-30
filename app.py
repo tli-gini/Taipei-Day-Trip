@@ -7,9 +7,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer
 from pydantic import BaseModel
 from passlib.context import CryptContext
-from attraction import get_all_attractions, attraction_name, attraction_mrt,get_attraction_id, get_mrt_stats
-from user import create_user, check_user,check_signin,get_signin_user_info
-from database import connect_db
+from attraction import get_all_attractions, attraction_name, attraction_mrt, get_attraction_id, get_mrt_stats
+from user import create_user, check_user, check_signin, get_signin_user_info
+from booking import create_booking, get_booking_by_user, delete_booking_by_email
 from decimal import Decimal
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
@@ -19,8 +19,6 @@ import os
 app=FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-conn = connect_db()
-cursor = conn.cursor()
 
 origins = [
     "http://localhost:8000",
@@ -63,9 +61,9 @@ async def index(request: Request):
 async def attraction(request: Request, id: int):  
 	return FileResponse("./static/attraction.html", media_type="text/html")
 
-# @app.get("/booking", include_in_schema=False)
-# async def booking(request: Request):
-# 	return FileResponse("./static/booking.html", media_type="text/html")
+@app.get("/booking", include_in_schema=False)
+async def booking(request: Request):
+	return FileResponse("./static/booking.html", media_type="text/html")
 
 # @app.get("/thankyou", include_in_schema=False)
 # async def thankyou(request: Request):
@@ -132,10 +130,10 @@ async def protected_route(token: str = Depends(oauth2_scheme)):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         email = payload.get("sub")
         if email is None:
-            raise HTTPException(status_code=401, detail="Invalid token")
+            raise HTTPException(status_code=403, detail="Invalid token")
         return {"email": email, "message": "Protected data"}
     except jwt.PyJWTError:
-        raise HTTPException(status_code=401, detail="Invalid token")
+        raise HTTPException(status_code=403, detail="Invalid token")
 
 # Attraction
 @app.get("/api/attractions")
@@ -195,9 +193,110 @@ async def get_mrts():
         return JSONResponse(content={"data": mrt_names}, status_code=200)
     except Exception as e:
         print(f"An error occurred: {str(e)}")  
-        return JSONResponse(content={"error": True, "message": "Internal Server Error. Please try again later."}, status_code=500)
+        return JSONResponse(content={"error": True, "message": "伺服器內部錯誤，請再試一次"}, status_code=500)
 
+# Booking
+@app.get("/api/booking")
+async def get_booking(request: Request):
+    token = request.headers.get('Authorization', '').split(" ")[1] if request.headers.get('Authorization', '').startswith("Bearer ") else None
+    if not token:
+        return JSONResponse(status_code=403, content={"error": True, "message": "請登入再進行預訂"})
 
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get('sub')
+        if not email:
+            return JSONResponse(status_code=403, content={"error": True, "message": "請登入再進行預訂"})
+
+        booking = get_booking_by_user(email)
+        if not booking:
+            return JSONResponse(status_code=400, content={"error": True, "message": "找不到預訂資訊"})
+
+        attraction = get_attraction_id(booking['attractionId'])
+        if not attraction:
+            return JSONResponse(status_code=400, content={"error": True, "message": "找不到相關景點資訊"})
+
+        image_url = json.loads(attraction['images'])[0] if 'images' in attraction and attraction['images'] else None
+
+        booking_info = {
+            "attraction": {
+                "id": attraction['id'],
+                "name": attraction['name'],
+                "address": attraction['address'],
+                "image": image_url
+            },
+            "date": booking['date'].strftime("%Y-%m-%d"),
+            "time": booking['time'],
+            "price": booking['price']
+        }
+        return JSONResponse(status_code=200, content={"data": booking_info})
+
+    except jwt.PyJWTError as e:
+        return JSONResponse(status_code=403, content={"error": True, "message": "連線逾時，請再次登入"})
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return JSONResponse(status_code=500, content={"error": True, "message": "伺服器內部錯誤，請再試一次"})
+
+@app.post("/api/booking")
+async def get_booking_info(request: Request):
+    token = request.headers.get('Authorization', '').split(" ")[1] if request.headers.get('Authorization', '').startswith("Bearer ") else None
+    if not token:
+        return JSONResponse(status_code=403, content={"error": True, "message": "請登入再進行預訂"})
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get('sub')
+        if not email:
+            return JSONResponse(status_code=403, content={"error": True, "message": "請登入再進行預訂"})
+
+        # Fetch user info using email
+        user_info = get_signin_user_info(email)
+        if not user_info['data']:
+            return JSONResponse(status_code=404, content={"error": True, "message": "請登入再進行預訂"})
+
+        booking_data = await request.json()
+        attractionId = booking_data.get("attractionId")
+        date = booking_data.get("date")
+        time = booking_data.get("time")
+        price = booking_data.get("price")
+
+        if not date or not time:
+            return JSONResponse(status_code=400, content={"error": True, "message": "請選擇日期與時間以進行預訂"})
+        
+        result = create_booking(attractionId, date, time, price, user_info['data']['email'], user_info['data']['name'])
+        
+        if result and result.get("error"):
+            return JSONResponse(status_code=400, content={"error": True, "message": result.get("message", "預定系統錯誤，請再試一次")})
+
+        return JSONResponse(status_code=200, content={"ok": True})
+    except jwt.PyJWTError as e:
+        return JSONResponse(status_code=403, content={"error": True, "message": "連線逾時，請再次登入"})
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return JSONResponse(status_code=500, content={"error": True, "message": "伺服器內部錯誤，請再試一次"})
+
+@app.delete("/api/booking")
+async def delete_booking(request: Request):
+    token = request.headers.get('Authorization', '').split(" ")[1] if request.headers.get('Authorization', '').startswith("Bearer ") else None
+    if not token:
+        return JSONResponse(status_code=403, content={"error": True, "message": "請登入以繼續"})
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get('sub')
+        if not email:
+            return JSONResponse(status_code=403, content={"error": True, "message": "請登入以繼續"})
+
+        if delete_booking_by_email(email):
+            return JSONResponse(status_code=200, content={"ok": True})
+        else:
+            return JSONResponse(status_code=400, content={"error": True, "message": "無此預訂資料"})
+    
+    except jwt.PyJWTError:
+        return JSONResponse(status_code=403, content={"error": True, "message": "連線逾時，請再次登入"})
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
+        return JSONResponse(status_code=500, content={"error": True, "message": "伺服器內部錯誤，請再試一次"})
 
 if __name__ == '__main__':
     uvicorn.run(app, host="localhost", port=8000)

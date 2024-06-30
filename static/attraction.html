@@ -21,7 +21,7 @@
         <div class="menu-container" id="menu-container">
           <div class="menu">
             <div class="menu-items">
-              <div class="menu-item">預定行程</div>
+              <div class="menu-item" id="book-btn">預定行程</div>
               <div class="menu-item" id="sign-btn" onclick="openSignin()">
                 登入/註冊
               </div>
@@ -188,7 +188,13 @@
                 新台幣 <span class="price" id="price">0</span> 元
               </div>
             </div>
-            <button class="booking-btn">開始預約行程</button>
+            <button
+              class="booking-btn"
+              id="start-booking-btn"
+              onclick="bookAttraction()"
+            >
+              開始預約行程
+            </button>
           </div>
         </div>
       </div>
@@ -211,20 +217,6 @@
       <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
   </body>
-  <script>
-    // checkbox
-    const checkAM = document.getElementById("check-am");
-    const checkPM = document.getElementById("check-pm");
-    const price = document.getElementById("price");
-
-    function checkTime() {
-      if (checkAM.checked) {
-        price.textContent = 2000;
-      } else if (checkPM.checked) {
-        price.textContent = 2500;
-      }
-    }
-  </script>
   <script src="/static/attraction.js"></script>
   <script src="/static/sign-system.js"></script>
 </html>
