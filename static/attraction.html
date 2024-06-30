@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/attraction.css" />
+    <link rel="stylesheet" href="/static/sign-system.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,8 +21,11 @@
         <div class="menu-container" id="menu-container">
           <div class="menu">
             <div class="menu-items">
-              <div class="menu-item">預定行程</div>
-              <div class="menu-item">登入/註冊</div>
+              <div class="menu-item" id="book-btn">預定行程</div>
+              <div class="menu-item" id="sign-btn" onclick="openSignin()">
+                登入/註冊
+              </div>
+              <div class="menu-item" id="signout-btn">登出系統</div>
             </div>
           </div>
         </div>
@@ -29,6 +33,82 @@
     </header>
 
     <div class="container" id="attraction-info">
+      <dialog class="sign-dialog" id="signin-dialog">
+        <div class="sign-dialog-container">
+          <div class="top-color"></div>
+          <div class="sign-container">
+            <img
+              src="/static/img/icon/icon_close.png"
+              class="close-btn"
+              id="signin-close-btn"
+            />
+            <div class="sign-content">
+              <div class="sign-title">登入會員帳號</div>
+              <input
+                class="sign-input"
+                id="signin-email"
+                type="text"
+                placeholder="輸入電子信箱"
+              />
+              <input
+                class="sign-input"
+                id="signin-pwd"
+                type="password"
+                placeholder="輸入密碼"
+              />
+              <button class="dialog-sign-btn" id="signin-btn">登入帳戶</button>
+              <div class="data-msg" id="signin-data-msg"></div>
+              <div class="dialog-bottom-text">
+                還沒有帳戶？<span class="link-to-sign" id="link-to-signup"
+                  >點此註冊</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </dialog>
+      <dialog class="sign-dialog" id="signup-dialog">
+        <div class="sign-dialog-container">
+          <div class="top-color"></div>
+          <div class="sign-container">
+            <img
+              src="/static/img/icon/icon_close.png"
+              class="close-btn"
+              id="signup-close-btn"
+            />
+            <div class="sign-content">
+              <div class="sign-title">註冊會員帳號</div>
+              <input
+                class="sign-input"
+                id="signup-name"
+                type="text"
+                placeholder="輸入姓名"
+              />
+              <input
+                class="sign-input"
+                id="signup-email"
+                type="text"
+                placeholder="輸入電子信箱"
+              />
+              <input
+                class="sign-input"
+                id="signup-pwd"
+                type="password"
+                placeholder="輸入密碼"
+              />
+              <button class="dialog-sign-btn" id="signup-btn">
+                註冊新帳戶
+              </button>
+              <div class="data-msg" id="signup-data-msg"></div>
+              <div class="dialog-bottom-text">
+                已經有帳戶了？<span class="link-to-sign" id="link-to-signin"
+                  >點此登入</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </dialog>
       <div class="top-content">
         <div class="left-side-top">
           <div class="left-img-container">
@@ -108,7 +188,13 @@
                 新台幣 <span class="price" id="price">0</span> 元
               </div>
             </div>
-            <button class="booking-btn">開始預約行程</button>
+            <button
+              class="booking-btn"
+              id="start-booking-btn"
+              onclick="bookAttraction()"
+            >
+              開始預約行程
+            </button>
           </div>
         </div>
       </div>
@@ -131,19 +217,6 @@
       <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
   </body>
-  <script>
-    // checkbox
-    const checkAM = document.getElementById("check-am");
-    const checkPM = document.getElementById("check-pm");
-    const price = document.getElementById("price");
-
-    function checkTime() {
-      if (checkAM.checked) {
-        price.textContent = 2000;
-      } else if (checkPM.checked) {
-        price.textContent = 2500;
-      }
-    }
-  </script>
   <script src="/static/attraction.js"></script>
+  <script src="/static/sign-system.js"></script>
 </html>

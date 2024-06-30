@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/static/index.css" />
+    <link rel="stylesheet" href="/static/sign-system.css" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,14 +21,93 @@
         <div class="menu-container" id="menu-container">
           <div class="menu">
             <div class="menu-items">
-              <div class="menu-item">預定行程</div>
-              <div class="menu-item">登入/註冊</div>
+              <div class="menu-item" id="book-btn">預定行程</div>
+              <div class="menu-item" id="sign-btn" onclick="openSignin()">
+                登入/註冊
+              </div>
+              <div class="menu-item" id="signout-btn">登出系統</div>
             </div>
           </div>
         </div>
       </div>
     </header>
     <div class="content">
+      <dialog class="sign-dialog" id="signin-dialog">
+        <div class="sign-dialog-container">
+          <div class="top-color"></div>
+          <div class="sign-container">
+            <img
+              src="/static/img/icon/icon_close.png"
+              class="close-btn"
+              id="signin-close-btn"
+            />
+            <div class="sign-content">
+              <div class="sign-title">登入會員帳號</div>
+              <input
+                class="sign-input"
+                id="signin-email"
+                type="text"
+                placeholder="輸入電子信箱"
+              />
+              <input
+                class="sign-input"
+                id="signin-pwd"
+                type="password"
+                placeholder="輸入密碼"
+              />
+              <button class="dialog-sign-btn" id="signin-btn">登入帳戶</button>
+              <div class="data-msg" id="signin-data-msg"></div>
+              <div class="dialog-bottom-text">
+                還沒有帳戶？<span class="link-to-sign" id="link-to-signup"
+                  >點此註冊</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </dialog>
+      <dialog class="sign-dialog" id="signup-dialog">
+        <div class="sign-dialog-container">
+          <div class="top-color"></div>
+          <div class="sign-container">
+            <img
+              src="/static/img/icon/icon_close.png"
+              class="close-btn"
+              id="signup-close-btn"
+            />
+            <div class="sign-content">
+              <div class="sign-title">註冊會員帳號</div>
+              <input
+                class="sign-input"
+                id="signup-name"
+                type="text"
+                placeholder="輸入姓名"
+              />
+              <input
+                class="sign-input"
+                id="signup-email"
+                type="text"
+                placeholder="輸入電子信箱"
+              />
+              <input
+                class="sign-input"
+                id="signup-pwd"
+                type="password"
+                placeholder="輸入密碼"
+              />
+              <button class="dialog-sign-btn" id="signup-btn">
+                註冊新帳戶
+              </button>
+              <div class="data-msg" id="signup-data-msg"></div>
+              <div class="dialog-bottom-text">
+                已經有帳戶了？<span class="link-to-sign" id="link-to-signin"
+                  >點此登入</span
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </dialog>
       <div class="welcome">
         <img src="/static/img/[desktop] hero section.jpg" alt="" />
         <div class="welcome-text-container">
@@ -38,8 +118,12 @@
             </div>
             <div id="search-section">
               <div class="search-box">
-                <input type="text" placeholder="輸入景點名稱查詢" />
-                <button id="search-button" onmouseover="" onmouseout="">
+                <input
+                  class="search-input"
+                  type="text"
+                  placeholder="輸入景點名稱查詢"
+                />
+                <button id="search-button">
                   <img src="/static/img/icon/icon_search.png" alt="" />
                 </button>
               </div>
@@ -71,55 +155,59 @@
     <footer class="footer">
       <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
+    <script>
+      // mrt scroll
+      const mrtScroll = document.querySelectorAll(".mrt-bar-container a");
+      const rightArrow = document.querySelector(
+        ".mrt-bar-container .right-mrt-arrow .right-mrt-arrow-img"
+      );
+      const leftArrow = document.querySelector(
+        ".mrt-bar-container .left-mrt-arrow .left-mrt-arrow-img"
+      );
+      const mrtList = document.querySelector(".mrt-bar-container .mrt-bar");
+
+      const manageScroll = () => {
+        let maxScrollValue = mrtList.scrollWidth - mrtList.clientWidth - 20;
+        console.log("scrollWidth: ", mrtList.scrollWidth);
+        console.log("clientWidth: ", mrtList.clientWidth);
+        console.log("maxScrollValue: ", maxScrollValue);
+        console.log("scrollLeft: ", mrtList.scrollLeft);
+      };
+
+      const getScrollAmount = () => {
+        if (
+          window.matchMedia("(min-width: 1200px) and (max-width: 1920px)")
+            .matches
+        ) {
+          return 800;
+        } else if (
+          window.matchMedia("(min-width: 920px) and (max-width: 1200px)")
+            .matches
+        ) {
+          return 645;
+        } else if (
+          window.matchMedia("(min-width: 600px) and (max-width: 920px)").matches
+        ) {
+          return 420;
+        } else if (
+          window.matchMedia("(min-width: 360px) and (max-width: 600px)").matches
+        ) {
+          return 235;
+        } else {
+          return 200;
+        }
+      };
+      rightArrow.addEventListener("click", () => {
+        mrtList.scrollLeft += getScrollAmount();
+        manageScroll();
+      });
+
+      leftArrow.addEventListener("click", () => {
+        mrtList.scrollLeft -= getScrollAmount();
+        manageScroll();
+      });
+    </script>
   </body>
-  <script>
-    const mrtScroll = document.querySelectorAll(".mrt-bar-container a");
-    const rightArrow = document.querySelector(
-      ".mrt-bar-container .right-mrt-arrow .right-mrt-arrow-img"
-    );
-    const leftArrow = document.querySelector(
-      ".mrt-bar-container .left-mrt-arrow .left-mrt-arrow-img"
-    );
-    const mrtList = document.querySelector(".mrt-bar-container .mrt-bar");
-
-    const manageScroll = () => {
-      let maxScrollValue = mrtList.scrollWidth - mrtList.clientWidth - 20;
-      console.log("scrollWidth: ", mrtList.scrollWidth);
-      console.log("clientWidth: ", mrtList.clientWidth);
-      console.log("maxScrollValue: ", maxScrollValue);
-      console.log("scrollLeft: ", mrtList.scrollLeft);
-    };
-
-    const getScrollAmount = () => {
-      if (
-        window.matchMedia("(min-width: 1200px) and (max-width: 1920px)").matches
-      ) {
-        return 800;
-      } else if (
-        window.matchMedia("(min-width: 920px) and (max-width: 1200px)").matches
-      ) {
-        return 645;
-      } else if (
-        window.matchMedia("(min-width: 600px) and (max-width: 920px)").matches
-      ) {
-        return 420;
-      } else if (
-        window.matchMedia("(min-width: 360px) and (max-width: 600px)").matches
-      ) {
-        return 235;
-      } else {
-        return 200;
-      }
-    };
-    rightArrow.addEventListener("click", () => {
-      mrtList.scrollLeft += getScrollAmount();
-      manageScroll();
-    });
-
-    leftArrow.addEventListener("click", () => {
-      mrtList.scrollLeft -= getScrollAmount();
-      manageScroll();
-    });
-  </script>
+  <script src="/static/sign-system.js"></script>
   <script src="/static/index.js"></script>
 </html>

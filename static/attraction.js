@@ -1,5 +1,6 @@
+let attractionId = window.location.pathname.split("/").pop();
 document.addEventListener("DOMContentLoaded", async () => {
-  const attractionId = window.location.pathname.split("/").pop();
+  // attractionId = window.location.pathname.split("/").pop();
   try {
     const response = await fetch(`/api/attraction/${attractionId}`);
     if (!response.ok) {
@@ -100,3 +101,70 @@ document.addEventListener("DOMContentLoaded", async () => {
 document.querySelector("#back-to-homepage").addEventListener("click", () => {
   window.location.href = `/`;
 });
+
+function displayPrice(price) {
+  document.getElementById("price").textContent = price;
+}
+
+function checkTime() {
+  const checkAM = document.getElementById("check-am");
+  const checkPM = document.getElementById("check-pm");
+
+  if (checkAM.checked) {
+    displayPrice(2000);
+  } else if (checkPM.checked) {
+    displayPrice(2500);
+  }
+}
+
+async function bookAttraction() {
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    console.log("請登入再進行預訂");
+    openSignin();
+    return;
+  }
+  const date = document.querySelector(".input-date").value;
+  const checkAM = document.getElementById("check-am");
+  const checkPM = document.getElementById("check-pm");
+  let time, price;
+
+  if (checkAM.checked) {
+    time = "08:00~12:00";
+    price = 2000;
+  } else if (checkPM.checked) {
+    time = "13:00~18:00";
+    price = 2500;
+  } else {
+    alert("請選擇時間");
+    return;
+  }
+
+  if (!date) {
+    alert("請選擇日期");
+    return;
+  }
+
+  displayPrice(price);
+
+  fetch("/api/booking", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ attractionId, date, time, price }),
+  })
+    .then((response) => response.json())
+    .then((bookingResult) => {
+      if (bookingResult.ok) {
+        window.location.href = "/booking";
+      } else {
+        alert(bookingResult.message);
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert(bookingResult.message);
+    });
+}
