@@ -1,6 +1,5 @@
 const apiUrl = window.apiUrl;
 
-// display name and email
 function displayUserInfo(userData) {
   const nameSpan = document.querySelectorAll(".name-span");
   const nameInput = document.getElementById("your-name");
@@ -13,73 +12,6 @@ function displayUserInfo(userData) {
   if (userData.email) {
     emailInput.value = userData.email;
   }
-}
-
-function fetchUserInfo() {
-  const token = localStorage.getItem("jwtToken");
-  if (!token) {
-    console.log("請登入再進行預訂");
-    return;
-  }
-
-  fetch(`${apiUrl}/api/user/auth`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      if (data && data.data) {
-        displayUserInfo(data.data);
-      } else {
-        console.log("error");
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });
-}
-
-document.addEventListener("DOMContentLoaded", fetchUserInfo);
-
-// fetch get /booking
-function getBookingInfo() {
-  const token = localStorage.getItem("jwtToken");
-
-  if (!token) {
-    window.location.href = "/";
-    return;
-  }
-
-  fetch("/api/booking", {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (response.status === 403) {
-        localStorage.removeItem("jwtToken");
-        window.location.href = "/";
-        throw new Error("請重新登入");
-      }
-      return response.json();
-    })
-    .then((data) => {
-      if (data.error) {
-        renderNoBooking();
-      }
-      if (data.data) {
-        renderBookingData(data.data);
-      } else {
-        renderNoBooking();
-      }
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
 }
 
 function renderBookingData(bookingInfo) {
@@ -111,31 +43,77 @@ function renderNoBooking() {
   document.querySelector(".footer").style.paddingTop = "40px";
 }
 
-function checkLoginStatus() {
+function fetchUserInfo() {
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    console.log("請登入再進行預訂");
+    return;
+  }
+
+  if (sessionStorage.getItem("userData")) {
+    displayUserInfo(JSON.parse(sessionStorage.getItem("userData")));
+    getBookingInfo();
+    return;
+  }
+
+  fetch(`${apiUrl}/api/user/auth`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data && data.data) {
+        sessionStorage.setItem("userData", JSON.stringify(data.data));
+        displayUserInfo(data.data);
+        getBookingInfo();
+      } else {
+        console.log("User data fetch error");
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching user data:", error);
+    });
+}
+
+function getBookingInfo() {
   const token = localStorage.getItem("jwtToken");
   if (!token) {
     window.location.href = "/";
-  } else {
-    getBookingInfo();
+    return;
   }
-}
 
-document.addEventListener("DOMContentLoaded", () => {
-  checkLoginStatus();
-  getBookingInfo();
-});
-
-// fetch delete /booking
-function setupDeleteButton() {
-  const deleteBtn = document.getElementById("delete-btn");
-  if (deleteBtn) {
-    deleteBtn.addEventListener("click", deleteBooking);
+  if (sessionStorage.getItem("bookingInfo")) {
+    renderBookingData(JSON.parse(sessionStorage.getItem("bookingInfo")));
+    return;
   }
+
+  fetch("/api/booking", {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      if (data.error) {
+        renderNoBooking();
+      } else if (data.data) {
+        sessionStorage.setItem("bookingInfo", JSON.stringify(data.data));
+        renderBookingData(data.data);
+      } else {
+        renderNoBooking();
+      }
+    })
+    .catch((error) => {
+      console.error("Error fetching booking info:", error);
+    });
 }
 
 function deleteBooking() {
   const token = localStorage.getItem("jwtToken");
-
   if (!token) {
     alert("請登入以繼續");
     return;
@@ -152,6 +130,8 @@ function deleteBooking() {
       .then((response) => response.json())
       .then((data) => {
         if (data.ok) {
+          sessionStorage.removeItem("bookingInfo");
+          renderNoBooking();
           location.reload();
         } else {
           throw new Error(data.message);
@@ -164,7 +144,33 @@ function deleteBooking() {
   }
 }
 
+function setupDeleteButton() {
+  const deleteBtn = document.getElementById("delete-btn");
+  if (deleteBtn) {
+    deleteBtn.addEventListener("click", deleteBooking);
+  }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-  getBookingInfo();
-  setupDeleteButton();
+  const token = localStorage.getItem("jwtToken");
+  if (!token) {
+    window.location.href = "/";
+    return;
+  }
+
+  setupUserInfoAndBooking();
 });
+
+function setupUserInfoAndBooking() {
+  if (sessionStorage.getItem("userData")) {
+    displayUserInfo(JSON.parse(sessionStorage.getItem("userData")));
+    if (sessionStorage.getItem("bookingInfo")) {
+      renderBookingData(JSON.parse(sessionStorage.getItem("bookingInfo")));
+    } else {
+      getBookingInfo();
+    }
+  } else {
+    fetchUserInfo();
+  }
+  setupDeleteButton();
+}
