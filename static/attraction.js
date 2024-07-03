@@ -1,6 +1,5 @@
 let attractionId = window.location.pathname.split("/").pop();
 document.addEventListener("DOMContentLoaded", async () => {
-  // attractionId = window.location.pathname.split("/").pop();
   try {
     const response = await fetch(`/api/attraction/${attractionId}`);
     if (!response.ok) {

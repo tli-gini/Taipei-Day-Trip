@@ -1,8 +1,6 @@
 window.apiUrl = "http://127.0.0.1:8000"; //remember to change
 console.log(apiUrl);
 
-// var attractionId = require("./attraction");
-// console.log("attractionId: ", attractionId);
 // Dialogs
 const signinDialog = document.querySelector("#signin-dialog");
 const signupDialog = document.querySelector("#signup-dialog");
