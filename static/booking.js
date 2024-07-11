@@ -140,6 +140,7 @@ function setupDeleteButton() {
 
 document.addEventListener("DOMContentLoaded", () => {
   if (!localStorage.getItem("jwtToken")) {
+    sessionStorage.clear();
     window.location.href = "/";
     return;
   }
