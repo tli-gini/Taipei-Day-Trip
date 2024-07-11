@@ -11,7 +11,30 @@
       href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@100..900&display=swap"
       rel="stylesheet"
     />
+
     <title>預定行程 - 台北一日遊</title>
+    <style>
+      .tappay-field-focus {
+        border-color: #66afe9;
+        outline: 0;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 8px rgba(102, 175, 233, 0.6);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 8px rgba(102, 175, 233, 0.6);
+      }
+      .has-error .tappay-field-focus {
+        border-color: #843534;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 6px #ce8483;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #ce8483;
+      }
+      .has-success .tappay-field-focus {
+        border-color: #2b542c;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+          0 0 6px #67b168;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 6px #67b168;
+      }
+    </style>
   </head>
   <body>
     <header class="header">
@@ -110,53 +133,43 @@
       </dialog>
       <div class="booking-container" id="booking-0">
         <div class="top-paragraph">
-          您好，<span class="name-span">Yakko</span>，待預訂的行程如下：
+          您好，<span class="name-span"></span>，待預訂的行程如下：
         </div>
         <div class="second-paragraph">目前沒有任何待預訂的行程。</div>
       </div>
       <div class="booking-container" id="booking-1">
         <div class="top-paragraph">
-          您好，<span class="name-span">Yakko</span>，待預訂的行程如下：
+          您好，<span class="name-span"></span>，待預訂的行程如下：
         </div>
         <div class="top-content">
           <div class="left-side-top">
             <div class="left-img-container">
               <div class="img-wrapper">
-                <img
-                  src="/static/img/left-img.jpg"
-                  alt=""
-                  class="left-img"
-                  id="image"
-                />
+                <img src="" alt="" class="left-img" id="image" />
               </div>
             </div>
           </div>
           <div class="right-side-top">
             <div class="right-attraction">
               <div class="right-title">
-                台北一日遊：<span class="attraction-span" id="attraction-span"
-                  >平安鐘</span
-                >
+                台北一日遊：<span
+                  class="attraction-span"
+                  id="attraction-span"
+                ></span>
               </div>
               <div class="right-paragraph">
-                日期：<span class="booking-span" id="date-span"
-                  >2024-04-13</span
-                >
+                日期：<span class="booking-span" id="date-span"></span>
               </div>
               <div class="right-paragraph">
-                時間：<span class="booking-span" id="time-span"
-                  >08:00~12:00</span
-                >
+                時間：<span class="booking-span" id="time-span"></span>
               </div>
               <div class="right-paragraph">
                 費用：<span class="booking-span">新台幣 </span
-                ><span class="booking-span" id="price-span">2000</span
+                ><span class="booking-span" id="price-span"></span
                 ><span class="booking-span"> 元</span>
               </div>
               <div class="right-paragraph">
-                地點：<span class="booking-span" id="address-span"
-                  >臺北市 大安區忠孝東路4段</span
-                >
+                地點：<span class="booking-span" id="address-span"></span>
               </div>
             </div>
             <img
@@ -206,48 +219,59 @@
       <div class="booking-container" id="booking-3">
         <div class="contact-content">
           <div class="contact-paragraph">信用卡付款資訊</div>
-          <div class="contact-item">
-            <div class="contact-title">卡片號碼：</div>
-            <input
-              type="text"
-              placeholder="**** **** **** ****"
-              class="contact-input"
-              id="cardNumber"
-              pattern="\d{16}"
-              required
-            />
-          </div>
-          <div class="contact-item">
-            <div class="contact-title">到期時間：</div>
-            <input
-              type="text"
-              placeholder="MM / YY"
-              class="contact-input"
-              id="expMonth"
-              pattern="\d{2}"
-              required
-            />
-          </div>
-          <div class="contact-item">
-            <div class="contact-title">驗證密碼：</div>
-            <input
-              type="text"
-              placeholder="CVV"
-              id="cvv"
-              class="contact-input"
-              pattern="\d{3,4}"
-              required
-            />
+          <div class="cardview-container" id="cardview-container">
+            <form id="payment-form">
+              <div class="form-group card-number-group contact-item">
+                <label
+                  for="tappay-card-number"
+                  class="control-label contact-title"
+                >
+                  卡片號碼：
+                </label>
+                <div
+                  class="form-control card-number contact-input"
+                  id="tappay-card-number"
+                ></div>
+              </div>
+              <div class="form-group expiration-date-group contact-item">
+                <label
+                  for="tappay-expiration-date"
+                  class="control-label contact-title"
+                >
+                  到期時間：
+                </label>
+                <div
+                  class="form-control expiration-date contact-input"
+                  id="tappay-expiration-date"
+                ></div>
+              </div>
+              <div class="form-group ccv-group contact-item">
+                <label for="tappay-ccv" class="control-label contact-title">
+                  驗證密碼：
+                </label>
+                <div
+                  class="form-control ccv contact-input"
+                  id="tappay-ccv"
+                ></div>
+              </div>
+              <div class="booking-bottom-container" id="booking-4">
+                <div class="booking-price-paragraph">
+                  總價：新台幣
+                  <span class="booking-price-span" id="booking-price-span"
+                    >0</span
+                  >元
+                </div>
+                <button
+                  class="booking-payment-btn"
+                  id="submit-button"
+                  type="submit"
+                >
+                  確認訂購並付款
+                </button>
+              </div>
+            </form>
           </div>
         </div>
-      </div>
-      <div class="booking-bottom-container" id="booking-4">
-        <div class="booking-price-paragraph">
-          總價：新台幣
-          <span class="booking-price-span" id="booking-price-span">2000</span>
-          元
-        </div>
-        <button class="booking-payment-btn">確認訂購並付款</button>
       </div>
     </div>
 
@@ -255,6 +279,13 @@
       <div class="footer-text">COPYRIGHT © 2021 台北一日遊</div>
     </footer>
   </body>
+
+  <script
+    src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"
+  ></script>
+  <script src="https://js.tappaysdk.com/sdk/tpdirect/v5.18.0"></script>
   <script>
     document
       .querySelector("#back-to-homepage")
