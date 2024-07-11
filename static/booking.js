@@ -139,6 +139,10 @@ function setupDeleteButton() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  if (!localStorage.getItem("jwtToken")) {
+    window.location.href = "/";
+    return;
+  }
   fetchUserInfo();
   setupDeleteButton();
 });
