@@ -162,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   function userSignOut() {
     localStorage.removeItem("jwtToken");
+    sessionStorage.clear();
     location.reload();
   }
 });

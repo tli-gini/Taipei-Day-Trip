@@ -10,11 +10,14 @@ from passlib.context import CryptContext
 from attraction import get_all_attractions, attraction_name, attraction_mrt, get_attraction_id, get_mrt_stats
 from user import create_user, check_user, check_signin, get_signin_user_info
 from booking import create_booking, get_booking_by_user, delete_booking_by_email
+from order import save_order_info, save_payment_info, generate_order_number
+from webhook import pay_by_prime
 from decimal import Decimal
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
 
 app=FastAPI()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
@@ -25,7 +28,6 @@ origins = [
     "http://127.0.0.1:8000"
 ]
 
-load_dotenv()
 
 SECRET_KEY = os.getenv("JWT_KEY")
 ALGORITHM = "HS256"
@@ -52,6 +54,14 @@ def decimal_default(obj):
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# serve config var
+@app.get("/config")
+async def get_config():
+    return JSONResponse({
+        "APP_ID": os.getenv("APP_ID"),
+        "APP_KEY": os.getenv("APP_KEY")
+    })
+
 # Static Pages (Never Modify Code in this Block)
 @app.get("/", include_in_schema=False)
 async def index(request: Request):
@@ -65,9 +75,9 @@ async def attraction(request: Request, id: int):
 async def booking(request: Request):
 	return FileResponse("./static/booking.html", media_type="text/html")
 
-# @app.get("/thankyou", include_in_schema=False)
-# async def thankyou(request: Request):
-# 	return FileResponse("./static/thankyou.html", media_type="text/html")
+@app.get("/thankyou", include_in_schema=False)
+async def thankyou(request: Request):
+	return FileResponse("./static/thankyou.html", media_type="text/html")
 
 # User
 @app.post("/api/user")
@@ -297,6 +307,67 @@ async def delete_booking(request: Request):
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return JSONResponse(status_code=500, content={"error": True, "message": "伺服器內部錯誤，請再試一次"})
+    
+# Order
+@app.post("/api/orders")
+async def create_new_order(request: Request):
+    token = request.headers.get('Authorization', '').split(" ")[1] if request.headers.get('Authorization', '').startswith("Bearer ") else None
+    if not token:
+        return JSONResponse(status_code=403, content={"error": True, "message": "請登入以繼續"})
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email = payload.get('sub')
+        if not email:
+            return JSONResponse(status_code=403, content={"error": True, "message": "請登入以繼續"})
+
+        data = await request.json()
+        order_info = data.get('order')
+
+        prime = data.get('prime')
+        price = order_info.get('price')
+        attraction_id = order_info['trip']['attraction']['id']
+        attraction_name = order_info['trip']['attraction']['name']
+        attraction_address = order_info['trip']['attraction']['address']
+        attraction_image = order_info['trip']['attraction']['image']
+        trip_date = order_info['trip']['date']
+        trip_time = order_info['trip']['time']
+        contact_name = order_info['contact']['name']
+        contact_email = order_info['contact']['email']
+        contact_phone = order_info['contact']['phone']
+
+        # Save the order info
+        order = save_order_info(prime, price, attraction_id, attraction_name, attraction_address, attraction_image, trip_date, trip_time, contact_name, contact_email, contact_phone)
+        if not order:
+            return JSONResponse(status_code=400, content={"error": True, "message": "訂單建立失敗，請再試一次"})
+
+        # Make the payment with TapPay
+        payment_response = await pay_by_prime(data, order_info)
+        payment_status = payment_response.get('status', 1)
+        payment_message = "付款成功" if payment_status == 0 else "付款失敗"
+
+        # Save the payment info
+        # Update the status in order table
+        order_number = generate_order_number(trip_date, attraction_id)
+        save_payment_info(order['ordersId'], order_number, payment_status, payment_message)
+
+        response_data = {
+            "data": {
+                "number": order_number,
+                "payment": {
+                    "status": payment_status,
+                    "message": payment_message
+                }
+            }
+        }
+        return JSONResponse(status_code=200, content=response_data)
+
+    except jwt.ExpiredSignatureError:
+        return JSONResponse(status_code=403, content={"error": True, "message": "連線逾時，請再次登入"})
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return JSONResponse(status_code=500, content={"error": True, "message": "伺服器內部錯誤，請再試一次"})
+
 
 if __name__ == '__main__':
     uvicorn.run(app, host="localhost", port=8000)
